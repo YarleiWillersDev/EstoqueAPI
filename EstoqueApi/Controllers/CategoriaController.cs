@@ -40,7 +40,7 @@ namespace EstoqueApi.Controllers
         }
 
         [HttpPost()]
-        public async Task<ActionResult<Categoria>> Create(Categoria categoria)
+        public async Task<ActionResult<Categoria>> Create([FromBody] Categoria categoria)
         {
             if (categoria is null)
                 return BadRequest("Categoria não pode ser nula");

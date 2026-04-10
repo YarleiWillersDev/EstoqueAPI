@@ -1,16 +1,19 @@
 using EstoqueApi.Context;
+using EstoqueApi.Service;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionStringDb = builder.Configuration.GetConnectionString("Default");
 
-
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(connectionStringDb));
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddControllers();
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -18,5 +21,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.MapControllers();
 app.Run();
 

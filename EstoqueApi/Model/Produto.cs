@@ -11,7 +11,7 @@ namespace EstoqueApi.Model
         public string Nome { get; private set; }
         public long CategoriaId { get; private set; }
         public Categoria? Categoria { get; private set; }
-        public ICollection<MovimentacaoEstoque> Movimentacoes { get; set; } = default!;
+        public ICollection<MovimentacaoEstoque>? Movimentacoes { get; set; }
 
         public Produto(string nome, long categoriaId)
         {
