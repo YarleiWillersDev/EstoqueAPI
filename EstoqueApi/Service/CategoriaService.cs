@@ -28,7 +28,7 @@ namespace EstoqueApi.Service
             return categoria;
         }
 
-        public async Task<Categoria> DeleteAsync(long id)
+        public async Task DeleteAsync(long id)
         {
             if (id <= 0)
                 throw new ArgumentException("Id inválido");
@@ -40,8 +40,6 @@ namespace EstoqueApi.Service
 
             _context.Categorias.Remove(categoria);
             await _context.SaveChangesAsync();
-
-            return categoria;
         }
 
         public async Task<List<Categoria>> GetAllAsync()

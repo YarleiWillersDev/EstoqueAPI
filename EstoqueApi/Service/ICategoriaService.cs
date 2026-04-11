@@ -11,6 +11,6 @@ namespace EstoqueApi.Service
         Task<Categoria> GetByIdAsync(long id);
         Task<List<Categoria>> GetAllAsync();
         Task<Categoria> CreateAsync(Categoria categoria);
-        Task<Categoria> DeleteAsync(long id);
+        Task DeleteAsync(long id);
     }
 }

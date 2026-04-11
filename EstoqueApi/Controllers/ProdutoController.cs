@@ -13,7 +13,7 @@ namespace EstoqueApi.Controllers
     [Route("api/[controller]")]
     public class ProdutoController : ControllerBase
     {
-        
+
         private readonly AppDbContext _context;
 
         public ProdutoController(AppDbContext context)
@@ -26,12 +26,12 @@ namespace EstoqueApi.Controllers
         {
             if (id <= 0)
                 return BadRequest("O ID do produto não pode ser menor ou igual a 0.");
-            
+
             var produto = await _context.Produtos.FirstOrDefaultAsync(p => p.Id == id);
 
             if (produto is null)
                 return NotFound("Nenhum produto com este ID foi encontrado.");
-            
+
             return Ok(produto);
         }
 
@@ -40,12 +40,12 @@ namespace EstoqueApi.Controllers
         {
             if (id <= 0)
                 return BadRequest("O ID da categorai não pode ser menor ou igual a 0.");
-            
+
             var produtos = await _context.Produtos
                 .Where(p => p.CategoriaId == id)
                 .ToListAsync();
-            
-            if (produtos == null || !produtos.Any())
+
+            if (!produtos.Any())
                 return NotFound("Nenhum produto com este ID de categoria foi encontrado.");
 
             return Ok(produtos);
@@ -60,31 +60,40 @@ namespace EstoqueApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Produto>> Create(Produto produto)
+        public async Task<ActionResult<Produto>> Create([FromBody] Produto produto)
         {
             if (produto is null)
                 return BadRequest("O produto não pode ser null");
 
-            validarProduto(produto);
+            var validationResult = ValidarProduto(produto);
+
+            if (validationResult is not OkResult)
+                return validationResult;
+
+            var categoriaExiste = await _context.Categorias
+                .AnyAsync(c => c.Id == produto.CategoriaId);
+
+            if (!categoriaExiste)
+                return BadRequest("Categoria informada não existe.");
 
             _context.Produtos.Add(produto);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetById), new {id = produto.Id}, produto);
+            return CreatedAtAction(nameof(GetById), new { id = produto.Id }, produto);
         }
 
-        private ActionResult validarProduto(Produto produto)
+        private ActionResult ValidarProduto(Produto produto)
         {
             if (produto.Nome is null)
                 return BadRequest("O nome do produto não pode ser nulo.");
-            
+
             if (produto.CategoriaId <= 0)
                 return BadRequest("O ID da categoria não pode ser menor ou igual a 0.");
-            
+
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(long id)
         {
             if (id <= 0)
@@ -94,7 +103,7 @@ namespace EstoqueApi.Controllers
 
             if (produto is null)
                 return NotFound("Nenhum produto com este ID foi encontrado.");
-            
+
             _context.Produtos.Remove(produto);
             await _context.SaveChangesAsync();
 
