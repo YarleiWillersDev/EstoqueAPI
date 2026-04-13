@@ -9,13 +9,22 @@ namespace EstoqueApi.Model
     {
         public long Id { get; private set; }
         public string Nome { get; private set; }
+        public int Quantidade {get; set; }
         public long CategoriaId { get; private set; }
         public Categoria? Categoria { get; private set; }
         public ICollection<MovimentacaoEstoque>? Movimentacoes { get; set; }
 
-        public Produto(string nome, long categoriaId)
+        private Produto()
+        {
+            Nome = default!;
+            Quantidade = default!;
+            CategoriaId = default!;
+        }
+
+        public Produto(string nome, int quantidade, long categoriaId)
         {
             Nome = nome;
+            Quantidade = quantidade;
             CategoriaId = categoriaId;
         }
 

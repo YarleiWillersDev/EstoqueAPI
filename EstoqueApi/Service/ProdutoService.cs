@@ -36,6 +36,9 @@ namespace EstoqueApi.Service
         {
             if (string.IsNullOrWhiteSpace(produto.Nome))
                 throw new ArgumentException("O nome do produto não pode ser vazio.");
+            
+            if (produto.Quantidade < 0)
+                throw new ArgumentException("A quantidade do produto não pode ser menor que 0.");
 
             if (produto.CategoriaId <= 0)
                 throw new ArgumentException("O ID da categoria não pode ser menor ou igual a 0");
@@ -53,8 +56,11 @@ namespace EstoqueApi.Service
                 throw new KeyNotFoundException("Não existem categorias cadastradas para o ID informado.");
         }
 
-        public async Task Delete(long id)
+        public async Task DeleteAsync(long id)
         {
+            if (id <= 0)
+                throw new ArgumentException("ID inválido");
+
             var produto = await _context.Produtos
                 .FirstOrDefaultAsync(p => p.Id == id);
 
@@ -65,7 +71,7 @@ namespace EstoqueApi.Service
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Produto>> GetAll()
+        public async Task<List<Produto>> GetAllAsync()
         {
             return await _context.Produtos.ToListAsync();
         }

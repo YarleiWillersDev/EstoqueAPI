@@ -10,8 +10,8 @@ namespace EstoqueApi.Service
     {
         Task<Produto> GetByIdAsync(long id);
         Task<List<Produto>> GetByCategoriaIdAsync(long categoriaID);
-        Task<List<Produto>> GetAll();
+        Task<List<Produto>> GetAllAsync();
         Task<Produto> CreateAsync(Produto produto);
-        Task Delete(long id);
+        Task DeleteAsync(long id);
     }
 }
