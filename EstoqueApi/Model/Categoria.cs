@@ -9,7 +9,7 @@ namespace EstoqueApi.Model
     {
         public long Id { get; private set; }
         public string Nome { get; private set; }
-        public ICollection<Produto>? Produtos {get; private set; }
+        public ICollection<Produto> Produtos {get; private set; } = new List<Produto>();
 
         private Categoria()
         {

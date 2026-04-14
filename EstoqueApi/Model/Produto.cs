@@ -12,7 +12,7 @@ namespace EstoqueApi.Model
         public int Quantidade {get; set; }
         public long CategoriaId { get; private set; }
         public Categoria? Categoria { get; private set; }
-        public ICollection<MovimentacaoEstoque>? Movimentacoes { get; set; }
+        public ICollection<MovimentacaoEstoque> Movimentacoes { get; set; } = new List<MovimentacaoEstoque>();
 
         private Produto()
         {
