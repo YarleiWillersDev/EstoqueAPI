@@ -1,4 +1,5 @@
 using EstoqueApi.Context;
+using EstoqueApi.Middlewares;
 using EstoqueApi.Service;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<IProdutoService, ProdutoService>();
+builder.Services.AddScoped<IMovimentacaoEstoqueService, MovimentacaoEstoqueService>();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
@@ -21,6 +23,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
