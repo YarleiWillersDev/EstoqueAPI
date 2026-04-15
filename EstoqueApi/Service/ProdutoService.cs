@@ -82,7 +82,9 @@ namespace EstoqueApi.Service
             await ValidarCategoriaExisteAsync(categoriaId);
 
             var produtos = await _context.Produtos
-                .Where(p => p.CategoriaId == categoriaId).ToListAsync();
+                .Include(p => p.Movimentacoes)
+                .Where(p => p.CategoriaId == categoriaId)
+                .ToListAsync();
 
             return produtos;
         }
@@ -93,6 +95,7 @@ namespace EstoqueApi.Service
                 throw new ValidationException("O ID não pode ser menor ou igual a 0.");
 
             var produto = await _context.Produtos
+                .Include(p => p.Movimentacoes)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (produto is null)

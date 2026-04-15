@@ -55,7 +55,9 @@ namespace EstoqueApi.Service
             if (id <= 0)
                 throw new ValidationException("Id inválido");
 
-            var categoria = await _context.Categorias.FirstOrDefaultAsync(c => c.Id == id);
+            var categoria = await _context.Categorias
+                .Include(c => c.Produtos)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (categoria is null)
                 throw new NotFoundException("Categoria não encontrada");

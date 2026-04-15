@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace EstoqueApi.DTOs
 {
@@ -11,13 +12,15 @@ namespace EstoqueApi.DTOs
         public string Nome { get; }
         public int Quantidade { get; }
         public long CategoriaId { get; }
+        public ICollection<MovimentcaoEstoqueResponse> Movimentacoes { get; } 
         
-        public ProdutoResponse(long id, string nome, int quantidade, long categoriaId)
+        public ProdutoResponse(long id, string nome, int quantidade, long categoriaId, ICollection<MovimentcaoEstoqueResponse> movimentacoes)
         {
             Id = id;
             Nome = nome;
             Quantidade = quantidade;
             CategoriaId = categoriaId;
+            Movimentacoes = movimentacoes;
         }
     }
 }

@@ -31,7 +31,7 @@ namespace EstoqueApi.Service
 
             ValidarEstoqueParaSaida(movimentacaoEstoque, produto);
 
-            EfetuarOperacaoDeEstoque(movimentacaoEstoque, produto);
+            EfetuarOperacaoDeEstoque(movimentacaoEstoque, produto.Quantidade);
 
             _context.MovimentacoesEstoque.Add(movimentacaoEstoque);
             await _context.SaveChangesAsync();
@@ -69,16 +69,16 @@ namespace EstoqueApi.Service
                 throw new BusinessException("Estoque insuficiente para realizar esta operação.");
         }
 
-        private void EfetuarOperacaoDeEstoque(MovimentacaoEstoque movimentacaoEstoque, Produto produto)
+        private void EfetuarOperacaoDeEstoque(MovimentacaoEstoque movimentacaoEstoque, int quantidade)
         {
             switch (movimentacaoEstoque.TipoMovimentacao)
             {
                 case TipoMovimentacao.Entrada:
-                    produto.Quantidade += movimentacaoEstoque.Quantidade;
+                    quantidade += movimentacaoEstoque.Quantidade;
                     break;
 
                 case TipoMovimentacao.Saida:
-                    produto.Quantidade -= movimentacaoEstoque.Quantidade;
+                    quantidade -= movimentacaoEstoque.Quantidade;
                     break;
                 
                 default:

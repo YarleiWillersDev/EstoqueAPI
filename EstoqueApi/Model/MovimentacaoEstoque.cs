@@ -18,7 +18,7 @@ namespace EstoqueApi.Model
         {
             Quantidade = quantidade;
             TipoMovimentacao = tipoMovimentacao;
-            DataMovimentacao = DateTime.Now;
+            DataMovimentacao = DateTime.UtcNow;
             ProdutoId = produtoId;
         }
     }
