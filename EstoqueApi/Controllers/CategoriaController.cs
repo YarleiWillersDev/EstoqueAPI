@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EstoqueApi.Context;
+using EstoqueApi.DTOs;
 using EstoqueApi.Model;
 using EstoqueApi.Service;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -24,7 +25,7 @@ namespace EstoqueApi.Controllers
         }
         
         [HttpGet("{id}")]
-        public async Task<ActionResult<Categoria>> GetById(long id)
+        public async Task<ActionResult<CategoriaResponse>> GetById(long id)
         {
             var categoria = await _service.GetByIdAsync(id);
 
@@ -32,7 +33,7 @@ namespace EstoqueApi.Controllers
         }
 
         [HttpGet()]
-        public async Task<ActionResult<List<Categoria>>> GetAll()
+        public async Task<ActionResult<List<CategoriaResponse>>> GetAll()
         {
             var categorias = await _service.GetAllAsync();
 
@@ -40,14 +41,14 @@ namespace EstoqueApi.Controllers
         }
 
         [HttpPost()]
-        public async Task<ActionResult<Categoria>> Create([FromBody] Categoria categoria)
+        public async Task<ActionResult<CategoriaResponse>> Create([FromBody] CategoriaRequest request)
         {
-            if (categoria is null)
+            if (request is null)
                 return BadRequest("Categoria não pode ser nula");
 
-            await _service.CreateAsync(categoria);
+            var categoriaResponse = await _service.CreateAsync(request);
 
-            return CreatedAtAction(nameof(GetById), new { id = categoria.Id }, categoria);
+            return CreatedAtAction(nameof(GetById), new { id = categoriaResponse.Id }, categoriaResponse.Id);
         }
 
         [HttpDelete("{id}")]

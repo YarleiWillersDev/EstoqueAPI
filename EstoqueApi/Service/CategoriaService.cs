@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EstoqueApi.Context;
+using EstoqueApi.DTOs;
 using EstoqueApi.Exceptions;
+using EstoqueApi.Mappers;
 using EstoqueApi.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,15 +20,25 @@ namespace EstoqueApi.Service
             _context = context;
         }
 
-        public async Task<Categoria> CreateAsync(Categoria categoria)
+        public async Task<CategoriaResponse> CreateAsync(CategoriaRequest request)
         {
-            if (categoria is null)
+            if (request is null)
                 throw new ValidationException("A categoria não pode ser nula");
+            
+            ValidarNomeNull(request.Nome);
+            
+            var categoriaEntity = CategoriaMapper.ToEntity(request);
 
-            _context.Categorias.Add(categoria);
+            _context.Categorias.Add(categoriaEntity);
             await _context.SaveChangesAsync();
 
-            return categoria;
+            return CategoriaMapper.ToResponse(categoriaEntity);
+        }
+
+        private void ValidarNomeNull (string nome)
+        {
+            if (string.IsNullOrWhiteSpace(nome))
+                throw new ValidationException("O nome da categoria não pode ser null.");
         }
 
         public async Task DeleteAsync(long id)
@@ -43,14 +55,14 @@ namespace EstoqueApi.Service
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Categoria>> GetAllAsync()
+        public async Task<List<CategoriaSimplesResponse>> GetAllAsync()
         {
             var categorias = await _context.Categorias.ToListAsync();
 
-            return categorias;
+            return categorias.Select(CategoriaMapper.ToSimplesResponse).ToList();
         }
 
-        public async Task<Categoria> GetByIdAsync(long id)
+        public async Task<CategoriaResponse> GetByIdAsync(long id)
         {
             if (id <= 0)
                 throw new ValidationException("Id inválido");
@@ -62,7 +74,7 @@ namespace EstoqueApi.Service
             if (categoria is null)
                 throw new NotFoundException("Categoria não encontrada");
 
-            return categoria;
+            return CategoriaMapper.ToResponse(categoria);
         }
     }
 }

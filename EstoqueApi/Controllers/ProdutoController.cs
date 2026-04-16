@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EstoqueApi.Context;
+using EstoqueApi.DTOs;
 using EstoqueApi.Model;
 using EstoqueApi.Service;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ namespace EstoqueApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Produto>> GetById(long id)
+        public async Task<ActionResult<ProdutoResponse>> GetById(long id)
         {
             if (id <= 0)
                 return BadRequest("O ID do produto não pode ser menor ou igual a 0.");
@@ -34,7 +35,7 @@ namespace EstoqueApi.Controllers
         }
 
         [HttpGet("by-categoria/{id}")]
-        public async Task<ActionResult<List<Produto>>> GetByCategoriaId(long id)
+        public async Task<ActionResult<List<ProdutoResponse>>> GetByCategoriaId(long id)
         {
             if (id <= 0)
                 return BadRequest("O ID da categoria não pode ser menor ou igual a 0.");
@@ -45,7 +46,7 @@ namespace EstoqueApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Produto>>> GetAll()
+        public async Task<ActionResult<List<ProdutoResponse>>> GetAll()
         {
             var produtos = await _service.GetAllAsync();
 
@@ -53,12 +54,12 @@ namespace EstoqueApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Produto>> Create([FromBody] Produto produto)
+        public async Task<ActionResult<ProdutoResponse>> Create([FromBody] ProdutoRequest request)
         {
-            if (produto is null)
+            if (request is null)
                 return BadRequest("O produto não pode ser null");
 
-            var novoProduto = await _service.CreateAsync(produto);
+            var novoProduto = await _service.CreateAsync(request);
 
             return CreatedAtAction(nameof(GetById), new { id = novoProduto.Id }, novoProduto);
         }

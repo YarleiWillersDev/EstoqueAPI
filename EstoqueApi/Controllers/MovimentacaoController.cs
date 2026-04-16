@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EstoqueApi.Context;
+using EstoqueApi.DTOs;
 using EstoqueApi.Model;
 using EstoqueApi.Service;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,7 @@ namespace EstoqueApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<MovimentacaoEstoque>> GetById(long id)
+        public async Task<ActionResult<MovimentacaoEstoqueResponse>> GetById(long id)
         {
             if (id <= 0)
                 throw new ArgumentException("O Id da movimentação de estoque não pode ser menor ou igual a 0.");
@@ -35,7 +36,7 @@ namespace EstoqueApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<MovimentacaoEstoque>>> GetAll()
+        public async Task<ActionResult<List<MovimentacaoEstoqueResponse>>> GetAll()
         {
             var movimentacoes = await _service.GetAll();
 
@@ -43,12 +44,12 @@ namespace EstoqueApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<MovimentacaoEstoque>> Create([FromBody] MovimentacaoEstoque movimentacaoEstoque)
+        public async Task<ActionResult<MovimentacaoEstoqueResponse>> Create([FromBody] MovimentacaoEstoqueRequest request)
         {
-            if (movimentacaoEstoque is null)
+            if (request is null)
                 throw new ArgumentNullException("Movimentação de estoque não pode ser null.");
 
-            var novaMovimentcao = await _service.Create(movimentacaoEstoque);
+            var novaMovimentcao = await _service.Create(request);
 
             return CreatedAtAction(nameof(GetById), new { id = novaMovimentcao.Id }, novaMovimentcao);
         }

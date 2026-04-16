@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EstoqueApi.Context;
+using EstoqueApi.DTOs;
 using EstoqueApi.Exceptions;
+using EstoqueApi.Mappers;
 using EstoqueApi.Model;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
@@ -19,10 +21,12 @@ namespace EstoqueApi.Service
             _context = context;
         }
 
-        public async Task<Produto> CreateAsync(Produto produto)
+        public async Task<ProdutoResponse> CreateAsync(ProdutoRequest request)
         {
-            if (produto is null)
+            if (request is null)
                 throw new ValidationException("O produto não pode ser null");
+
+            var produto = ProdutoMapper.ToEntity(request);
 
             ValidarProduto(produto);
             await ValidarCategoriaExisteAsync(produto.CategoriaId);
@@ -30,7 +34,7 @@ namespace EstoqueApi.Service
             _context.Produtos.Add(produto);
             await _context.SaveChangesAsync();
 
-            return produto;
+            return ProdutoMapper.ToResponse(produto);
         }
 
         private void ValidarProduto(Produto produto)
@@ -72,24 +76,23 @@ namespace EstoqueApi.Service
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Produto>> GetAllAsync()
+        public async Task<List<ProdutoSimplesResponse>> GetAllAsync()
         {
-            return await _context.Produtos.ToListAsync();
+            var produtos = await _context.Produtos.ToListAsync();
+
+            return produtos.Select(ProdutoMapper.ToSimplesResponse).ToList();
         }
 
-        public async Task<List<Produto>> GetByCategoriaIdAsync(long categoriaId)
+        public async Task<List<ProdutoSimplesResponse>> GetByCategoriaIdAsync(long categoriaId)
         {
-            await ValidarCategoriaExisteAsync(categoriaId);
-
             var produtos = await _context.Produtos
-                .Include(p => p.Movimentacoes)
                 .Where(p => p.CategoriaId == categoriaId)
                 .ToListAsync();
 
-            return produtos;
+            return produtos.Select(ProdutoMapper.ToSimplesResponse).ToList();
         }
 
-        public async Task<Produto> GetByIdAsync(long id)
+        public async Task<ProdutoResponse> GetByIdAsync(long id)
         {
             if (id <= 0)
                 throw new ValidationException("O ID não pode ser menor ou igual a 0.");
@@ -101,7 +104,7 @@ namespace EstoqueApi.Service
             if (produto is null)
                 throw new NotFoundException("Nenhum produto encontrado para o ID informado.");
 
-            return produto;
+            return ProdutoMapper.ToResponse(produto);
         }
     }
 }

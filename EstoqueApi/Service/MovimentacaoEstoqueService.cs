@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EstoqueApi.Context;
+using EstoqueApi.DTOs;
 using EstoqueApi.Exceptions;
+using EstoqueApi.Mappers;
 using EstoqueApi.Model;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +22,14 @@ namespace EstoqueApi.Service
             _context = context;
         }
 
-        public async Task<MovimentacaoEstoque> Create(MovimentacaoEstoque movimentacaoEstoque)
+        public async Task<MovimentacaoEstoqueResponse> Create(MovimentacaoEstoqueRequest request)
         {
-            if (movimentacaoEstoque is null)
+            if (request is null)
                 throw new ValidationException("Movimentação de estoque não pode ser nula.");
             
-            ValidarDadosMovimentacaoEstoque(movimentacaoEstoque);
+            ValidarDadosMovimentacaoEstoque(request);
+
+            var movimentacaoEstoque = MovimentacaoEstoqueMapper.ToEntity(request);
 
             var produto = await ObterProdutoPorIdAsync(movimentacaoEstoque.ProdutoId);
 
@@ -36,15 +40,15 @@ namespace EstoqueApi.Service
             _context.MovimentacoesEstoque.Add(movimentacaoEstoque);
             await _context.SaveChangesAsync();
 
-            return movimentacaoEstoque;
+            return MovimentacaoEstoqueMapper.ToResponse(movimentacaoEstoque);
         }
 
-        private void ValidarDadosMovimentacaoEstoque(MovimentacaoEstoque movimentacaoEstoque)
+        private void ValidarDadosMovimentacaoEstoque(MovimentacaoEstoqueRequest request)
         {
-            if (movimentacaoEstoque.Quantidade <= 0 )
+            if (request.Quantidade <= 0 )
                 throw new ValidationException("A quantidade de uma movimentação de estoque não pode ser menor ou igual a 0.");
             
-            if (movimentacaoEstoque.TipoMovimentacao != TipoMovimentacao.Entrada && movimentacaoEstoque.TipoMovimentacao != TipoMovimentacao.Saida)
+            if (request.TipoMovimentacao != TipoMovimentacao.Entrada && request.TipoMovimentacao != TipoMovimentacao.Saida)
                 throw new ValidationException("Tipo de movimentação inválido.");
         }
 
@@ -86,14 +90,14 @@ namespace EstoqueApi.Service
             }
         }
 
-        public async Task<List<MovimentacaoEstoque>> GetAll()
+        public async Task<List<MovimentacaoEstoqueResponse>> GetAll()
         {
             var movimentacao = await _context.MovimentacoesEstoque.ToListAsync();
 
-            return movimentacao;
+            return movimentacao.Select(MovimentacaoEstoqueMapper.ToResponse).ToList();
         }
 
-        public async Task<MovimentacaoEstoque> GetById(long id)
+        public async Task<MovimentacaoEstoqueResponse> GetById(long id)
         {
             if (id <= 0)
                 throw new ValidationException("O Id informado não pode ser menor o igual a 0.");
@@ -104,7 +108,7 @@ namespace EstoqueApi.Service
             if (movimentacao is null)
                 throw new NotFoundException("Nenhuma movimentação encontrada para o Id informada.");
             
-            return movimentacao;
+            return MovimentacaoEstoqueMapper.ToResponse(movimentacao);
         }
     }
 }

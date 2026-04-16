@@ -7,7 +7,7 @@ using EstoqueApi.Model;
 
 namespace EstoqueApi.DTOs
 {
-    public class MovimentcaoEstoqueResponse
+    public class MovimentacaoEstoqueResponse
     {
 
         public long Id { get; }
@@ -16,7 +16,7 @@ namespace EstoqueApi.DTOs
         public DateTime DataMovimentacao { get; }
         public long ProdutoId { get; }
 
-        public MovimentcaoEstoqueResponse(long id, int quantidade, TipoMovimentacao tipoMovimentacao, DateTime dataMovimentacao, long produtoId)
+        public MovimentacaoEstoqueResponse(long id, int quantidade, TipoMovimentacao tipoMovimentacao, DateTime dataMovimentacao, long produtoId)
         {
             Id = id;
             Quantidade = quantidade;

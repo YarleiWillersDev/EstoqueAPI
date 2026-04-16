@@ -18,9 +18,9 @@ namespace EstoqueApi.Mappers
             );
         }
 
-        public static MovimentcaoEstoqueResponse ToResponse(MovimentacaoEstoque mov)
+        public static MovimentacaoEstoqueResponse ToResponse(MovimentacaoEstoque mov)
         {
-            return new MovimentcaoEstoqueResponse(
+            return new MovimentacaoEstoqueResponse(
                 mov.Id,
                 mov.Quantidade,
                 mov.TipoMovimentacao,

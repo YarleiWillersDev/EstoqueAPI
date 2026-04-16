@@ -33,5 +33,10 @@ namespace EstoqueApi.Mappers
                 movimentacoes
             );
         }
+
+        public static ProdutoSimplesResponse ToSimplesResponse(Produto produto)
+        {
+            return new ProdutoSimplesResponse(produto.Id, produto.Nome);
+        }
     }
 }

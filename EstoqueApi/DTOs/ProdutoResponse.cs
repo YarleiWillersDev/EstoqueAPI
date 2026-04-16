@@ -12,9 +12,9 @@ namespace EstoqueApi.DTOs
         public string Nome { get; }
         public int Quantidade { get; }
         public long CategoriaId { get; }
-        public ICollection<MovimentcaoEstoqueResponse> Movimentacoes { get; } 
+        public ICollection<MovimentacaoEstoqueResponse> Movimentacoes { get; } 
         
-        public ProdutoResponse(long id, string nome, int quantidade, long categoriaId, ICollection<MovimentcaoEstoqueResponse> movimentacoes)
+        public ProdutoResponse(long id, string nome, int quantidade, long categoriaId, ICollection<MovimentacaoEstoqueResponse> movimentacoes)
         {
             Id = id;
             Nome = nome;

@@ -27,5 +27,10 @@ namespace EstoqueApi.Mappers
                 produtos
             );
         }
+
+        public static CategoriaSimplesResponse ToSimplesResponse(Categoria categorias)
+        {
+            return new CategoriaSimplesResponse(categorias.Id, categorias.Nome);
+        }
     }
 }
