@@ -10,9 +10,9 @@ namespace EstoqueApi.Service
 {
     public interface IMovimentacaoEstoqueService
     {
-        Task<MovimentacaoEstoqueResponse> Create(MovimentacaoEstoqueRequest request);
-        Task<MovimentacaoEstoqueResponse> GetById(long id);
-        Task<List<MovimentacaoEstoqueResponse>> GetAll();
+        Task<MovimentacaoEstoqueResponse> CreateAsync(MovimentacaoEstoqueRequest request);
+        Task<MovimentacaoEstoqueResponse> GetByIdAsync(long id);
+        Task<List<MovimentacaoEstoqueResponse>> GetAllAsync();
 
     }
 }

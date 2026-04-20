@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EstoqueApi.Exceptions;
 
 namespace EstoqueApi.Model
 {
@@ -26,6 +27,27 @@ namespace EstoqueApi.Model
             Nome = nome;
             Quantidade = quantidade;
             CategoriaId = categoriaId;
+        }
+
+        public void AdicionaEstoque(int quantidade)
+        {
+            if (quantidade <= 0)
+                throw new ValidationException("Quantidade inválida");
+            
+            Quantidade += quantidade;
+        }
+
+        public void RemoverEstoque(int quantidade)
+        {
+            if (quantidade <= 0)
+                throw new ValidationException("Quantidade inválida");
+            
+            if (Quantidade < quantidade)
+            {
+                throw new BussinesException("Estoque insuficiente.");
+            }
+
+            Quantidade -= quantidade;
         }
 
     }

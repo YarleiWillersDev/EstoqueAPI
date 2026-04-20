@@ -22,7 +22,7 @@ namespace EstoqueApi.Service
             _context = context;
         }
 
-        public async Task<MovimentacaoEstoqueResponse> Create(MovimentacaoEstoqueRequest request)
+        public async Task<MovimentacaoEstoqueResponse> CreateAsync(MovimentacaoEstoqueRequest request)
         {
             if (request is null)
                 throw new ValidationException("Movimentação de estoque não pode ser nula.");
@@ -33,9 +33,7 @@ namespace EstoqueApi.Service
 
             var produto = await ObterProdutoPorIdAsync(movimentacaoEstoque.ProdutoId);
 
-            ValidarEstoqueParaSaida(movimentacaoEstoque, produto);
-
-            EfetuarOperacaoDeEstoque(movimentacaoEstoque, produto.Quantidade);
+            EfetuarOperacaoDeEstoque(movimentacaoEstoque, produto);
 
             _context.MovimentacoesEstoque.Add(movimentacaoEstoque);
             await _context.SaveChangesAsync();
@@ -66,23 +64,16 @@ namespace EstoqueApi.Service
             return produto;
         }
 
-        private void ValidarEstoqueParaSaida(MovimentacaoEstoque movimentacaoEstoque, Produto produto)
-        {
-            if (movimentacaoEstoque.TipoMovimentacao == TipoMovimentacao.Saida 
-                && produto.Quantidade < movimentacaoEstoque.Quantidade)
-                throw new BusinessException("Estoque insuficiente para realizar esta operação.");
-        }
-
-        private void EfetuarOperacaoDeEstoque(MovimentacaoEstoque movimentacaoEstoque, int quantidade)
+        private void EfetuarOperacaoDeEstoque(MovimentacaoEstoque movimentacaoEstoque, Produto produto)
         {
             switch (movimentacaoEstoque.TipoMovimentacao)
             {
                 case TipoMovimentacao.Entrada:
-                    quantidade += movimentacaoEstoque.Quantidade;
+                    produto.AdicionaEstoque(movimentacaoEstoque.Quantidade);
                     break;
 
                 case TipoMovimentacao.Saida:
-                    quantidade -= movimentacaoEstoque.Quantidade;
+                    produto.RemoverEstoque(movimentacaoEstoque.Quantidade);
                     break;
                 
                 default:
@@ -90,14 +81,14 @@ namespace EstoqueApi.Service
             }
         }
 
-        public async Task<List<MovimentacaoEstoqueResponse>> GetAll()
+        public async Task<List<MovimentacaoEstoqueResponse>> GetAllAsync()
         {
             var movimentacao = await _context.MovimentacoesEstoque.ToListAsync();
 
             return movimentacao.Select(MovimentacaoEstoqueMapper.ToResponse).ToList();
         }
 
-        public async Task<MovimentacaoEstoqueResponse> GetById(long id)
+        public async Task<MovimentacaoEstoqueResponse> GetByIdAsync(long id)
         {
             if (id <= 0)
                 throw new ValidationException("O Id informado não pode ser menor o igual a 0.");

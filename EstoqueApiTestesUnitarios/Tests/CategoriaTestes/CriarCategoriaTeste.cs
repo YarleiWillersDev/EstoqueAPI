@@ -57,7 +57,7 @@ namespace EstoqueApiTestesUnitarios.Tests.CategoriaTestes
             var context = CriarBancoEmMemoria();
             var service = new CategoriaService(context);
 
-            var exception = await Assert.ThrowsAsync<ValidationException>(() => service.CreateAsync(null));
+            var exception = await Assert.ThrowsAsync<ValidationException>(() => service.CreateAsync(null!));
             Assert.Equal("A categoria não pode ser nula", exception.Message); // Valida se exceção de Request null está funcionando
 
             var validarSeExisteRegistroNoBanco = await context.Categorias.AnyAsync();
@@ -72,7 +72,7 @@ namespace EstoqueApiTestesUnitarios.Tests.CategoriaTestes
 
             var request = new CategoriaRequest // Request do método
             {
-                Nome = null
+                Nome = null!
             };
 
             var exception = await Assert.ThrowsAsync<ValidationException>(() => service.CreateAsync(request)); // Valida se método vai lançar exceção

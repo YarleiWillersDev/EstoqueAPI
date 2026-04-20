@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace EstoqueApi.Exceptions
 {
-    public class BusinessException : AppException
+    public class BussinesException : AppException
     {
-        public BusinessException(string message)
+        public BussinesException(string message)
         : base(422, "Regra de negócio violada", message) { }
 
     }

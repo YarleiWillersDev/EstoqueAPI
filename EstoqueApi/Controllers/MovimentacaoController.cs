@@ -30,7 +30,7 @@ namespace EstoqueApi.Controllers
             if (id <= 0)
                 throw new ArgumentException("O Id da movimentação de estoque não pode ser menor ou igual a 0.");
 
-            var movimentacao = await _service.GetById(id);
+            var movimentacao = await _service.GetByIdAsync(id);
 
             return Ok(movimentacao);
         }
@@ -38,7 +38,7 @@ namespace EstoqueApi.Controllers
         [HttpGet]
         public async Task<ActionResult<List<MovimentacaoEstoqueResponse>>> GetAll()
         {
-            var movimentacoes = await _service.GetAll();
+            var movimentacoes = await _service.GetAllAsync();
 
             return Ok(movimentacoes);
         }
@@ -49,7 +49,7 @@ namespace EstoqueApi.Controllers
             if (request is null)
                 throw new ArgumentNullException("Movimentação de estoque não pode ser null.");
 
-            var novaMovimentcao = await _service.Create(request);
+            var novaMovimentcao = await _service.CreateAsync(request);
 
             return CreatedAtAction(nameof(GetById), new { id = novaMovimentcao.Id }, novaMovimentcao);
         }
