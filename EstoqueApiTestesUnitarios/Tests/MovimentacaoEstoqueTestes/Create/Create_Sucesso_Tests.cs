@@ -1,19 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using EstoqueApi.Context;
 using EstoqueApi.DTOs;
-using EstoqueApi.Exceptions;
 using EstoqueApi.Model;
 using EstoqueApi.Service;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace EstoqueApiTestesUnitarios.Tests.MovimentacaoEstoqueTestes
+namespace EstoqueApiTestesUnitarios.Tests.MovimentacaoEstoqueTestes.Create
 {
-    public class CriarMovimentacaoEstoqueTeste
+    public class Create_Sucesso_Tests
     {
         private AppDbContext CriarBancoEmMemoria()
         {
@@ -69,22 +66,7 @@ namespace EstoqueApiTestesUnitarios.Tests.MovimentacaoEstoqueTestes
         }
 
         [Fact]
-        public async Task CreateAsync_EntradaInvalida_DeveRetornarErroDevidoRequestNull()
-        {
-            
-            var context = CriarBancoEmMemoria();
-            var service = new MovimentacaoEstoqueService(context);
-
-            var exception = await Assert.ThrowsAsync<ValidationException>(() => service.CreateAsync(null!));
-            Assert.Equal("Movimentação de estoque não pode ser nula.", exception.Message);
-
-            var naoExisteNoBanco = await context.MovimentacoesEstoque.AnyAsync();
-            Assert.False(naoExisteNoBanco);
-
-        }
-
-        [Fact]
-        public async Task CreateAsync_EntradaInvalida_DeveRetornarErroDevidoQuantidadeInvalida()
+        public async Task CreateAsync_SaidaValida_DeveDecrementarEstoqueEPersistirMovimentacao()
         {
             var context = CriarBancoEmMemoria();
             var service = new MovimentacaoEstoqueService(context);
@@ -92,24 +74,39 @@ namespace EstoqueApiTestesUnitarios.Tests.MovimentacaoEstoqueTestes
             var categoria = new Categoria("Bebidas");
             context.Categorias.Add(categoria);
 
-            var produto = new Produto("Coca-cola", 0, categoria.Id);
+            var produto = new Produto("Coca-cola", 50, categoria.Id);
             context.Produtos.Add(produto);
             await context.SaveChangesAsync();
 
             var request = new MovimentacaoEstoqueRequest
             {
-                Quantidade = -1,
-                TipoMovimentacao = TipoMovimentacao.Entrada,
+                Quantidade = 30,
+                TipoMovimentacao = TipoMovimentacao.Saida,
                 ProdutoId = produto.Id
             };
 
-            var exception = await Assert.ThrowsAsync<ValidationException>(() => service.CreateAsync(request));
-            Assert.Equal("A quantidade de uma movimentação de estoque não pode ser menor ou igual a 0.", exception.Message);
+            var dataAntesDaOperação = DateTime.UtcNow;
 
-            var naoExisteNoBanco = await context.MovimentacoesEstoque.AnyAsync();
-            Assert.False(naoExisteNoBanco);
+            var response = await service.CreateAsync(request);
 
-            Assert.Equal(0 , produto.Quantidade);
+            var dataPosretiorOperacao = DateTime.UtcNow;
+
+            Assert.NotNull(response);
+            Assert.Equal(30, response.Quantidade);
+            Assert.Equal(TipoMovimentacao.Saida, response.TipoMovimentacao);
+            Assert.Equal(produto.Id, response.ProdutoId);
+            Assert.True(response.Id > 0);
+            Assert.InRange(response.DataMovimentacao, dataAntesDaOperação, dataPosretiorOperacao);
+
+            var movimentacaoExiste = await context.MovimentacoesEstoque.FirstOrDefaultAsync();
+            Assert.NotNull(movimentacaoExiste);
+            Assert.Equal(30, movimentacaoExiste.Quantidade);
+            Assert.Equal(TipoMovimentacao.Saida, movimentacaoExiste.TipoMovimentacao);
+            Assert.Equal(produto.Id, movimentacaoExiste.ProdutoId);
+
+            var produtoAtualizado = await context.Produtos.FirstAsync();
+            Assert.Equal(20, produtoAtualizado.Quantidade);
+
         }
     }
 }
