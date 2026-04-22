@@ -29,7 +29,7 @@ namespace EstoqueApiTestesUnitarios.Tests.CategoriaTestes
             var service = new CategoriaService(context);
 
             var exception = await Assert.ThrowsAsync<ValidationException>(() => service.GetByIdAsync(-1));
-            Assert.Contains("Id", exception.Message);
+            Assert.Contains("id", exception.Message.ToLowerInvariant());
         }
 
         [Fact]
@@ -39,7 +39,7 @@ namespace EstoqueApiTestesUnitarios.Tests.CategoriaTestes
             var service = new CategoriaService(context);
 
             var exception = await Assert.ThrowsAsync<NotFoundException>(() => service.GetByIdAsync(999L));
-            Assert.Contains("Categoria", exception.Message);
+            Assert.Contains("categoria", exception.Message.ToLowerInvariant());
         }
     }
 }

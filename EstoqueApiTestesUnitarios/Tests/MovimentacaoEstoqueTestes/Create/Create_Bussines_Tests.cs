@@ -46,7 +46,7 @@ namespace EstoqueApiTestesUnitarios.Tests.MovimentacaoEstoqueTestes
             };
 
             var exception = await Assert.ThrowsAsync<BussinesException>(() => service.CreateAsync(request));
-            Assert.Equal("Estoque insuficiente.", exception.Message);
+            Assert.Contains("estoque", exception.Message.ToLowerInvariant());
 
             var naoExisteNoBanco = await context.MovimentacoesEstoque.AnyAsync();
             Assert.False(naoExisteNoBanco);

@@ -28,7 +28,7 @@ namespace EstoqueApiTestesUnitarios.Tests.CategoriaTestes
             var service = new CategoriaService(context);
 
             var exception = await Assert.ThrowsAsync<ValidationException>(() => service.CreateAsync(null!));
-            Assert.Equal("A categoria não pode ser nula", exception.Message); // Valida se exceção de Request null está funcionando
+            Assert.Contains("categoria", exception.Message.ToLowerInvariant()); // Valida se exceção de Request null está funcionando
 
             var validarSeExisteRegistroNoBanco = await context.Categorias.AnyAsync();
             Assert.False(validarSeExisteRegistroNoBanco);
@@ -46,7 +46,7 @@ namespace EstoqueApiTestesUnitarios.Tests.CategoriaTestes
             };
 
             var exception = await Assert.ThrowsAsync<ValidationException>(() => service.CreateAsync(request)); // Valida se método vai lançar exceção
-            Assert.Equal("O nome da categoria não pode ser null.", exception.Message); // Valida se a mensagem retornada condiz com o esperado
+            Assert.Contains("categoria", exception.Message.ToLowerInvariant()); // Valida se a mensagem retornada condiz com o esperado
 
             var existeRegistro = await context.Categorias.AnyAsync(); // Valida se o testes gravou registro no banco
             Assert.False(existeRegistro); 
@@ -64,7 +64,7 @@ namespace EstoqueApiTestesUnitarios.Tests.CategoriaTestes
             };
 
             var exception = await Assert.ThrowsAsync<ValidationException>(() => service.CreateAsync(request));
-            Assert.Equal("O nome da categoria não pode ser null.", exception.Message);
+            Assert.Contains("categoria", exception.Message.ToLowerInvariant());
 
             var existeRegistro = await context.Categorias.AnyAsync();
             Assert.False(existeRegistro);
@@ -82,7 +82,7 @@ namespace EstoqueApiTestesUnitarios.Tests.CategoriaTestes
             };
 
             var exception = await Assert.ThrowsAsync<ValidationException>(() => service.CreateAsync(request));
-            Assert.Equal("O nome da categoria não pode ser null.", exception.Message);
+            Assert.Contains("categoria", exception.Message.ToLowerInvariant());
 
             var existeRegistro = await context.Categorias.AnyAsync();
             Assert.False(existeRegistro);

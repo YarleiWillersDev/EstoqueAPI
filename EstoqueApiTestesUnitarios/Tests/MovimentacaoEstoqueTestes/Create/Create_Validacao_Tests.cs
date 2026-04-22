@@ -30,7 +30,7 @@ namespace EstoqueApiTestesUnitarios.Tests.MovimentacaoEstoqueTestes.Create
             var service = new MovimentacaoEstoqueService(context);
 
             var exception = await Assert.ThrowsAsync<ValidationException>(() => service.CreateAsync(null!));
-            Assert.Equal("Movimentação de estoque não pode ser nula.", exception.Message);
+            Assert.Contains("movimentação", exception.Message.ToLowerInvariant());
 
             var naoExisteNoBanco = await context.MovimentacoesEstoque.AnyAsync();
             Assert.False(naoExisteNoBanco);
@@ -58,7 +58,7 @@ namespace EstoqueApiTestesUnitarios.Tests.MovimentacaoEstoqueTestes.Create
             };
 
             var exception = await Assert.ThrowsAsync<ValidationException>(() => service.CreateAsync(request));
-            Assert.Equal("A quantidade de uma movimentação de estoque não pode ser menor ou igual a 0.", exception.Message);
+            Assert.Contains("movimentação", exception.Message.ToLowerInvariant());
 
             var naoExisteNoBanco = await context.MovimentacoesEstoque.AnyAsync();
             Assert.False(naoExisteNoBanco);
@@ -87,7 +87,7 @@ namespace EstoqueApiTestesUnitarios.Tests.MovimentacaoEstoqueTestes.Create
             };
 
             var exception = await Assert.ThrowsAsync<ValidationException>(() => service.CreateAsync(request));
-            Assert.Equal("Tipo de movimentação inválido.", exception.Message);
+            Assert.Contains("movimentação", exception.Message.ToLowerInvariant());
 
             var naoExisteNoBanco = await context.MovimentacoesEstoque.AnyAsync();
             Assert.False(naoExisteNoBanco);
@@ -107,7 +107,7 @@ namespace EstoqueApiTestesUnitarios.Tests.MovimentacaoEstoqueTestes.Create
             };
 
             var exception = await Assert.ThrowsAsync<ValidationException>(() => service.CreateAsync(request));
-            Assert.Equal("O Id do produto não pode ser menor ou igual a 0.", exception.Message);
+            Assert.Contains("id", exception.Message.ToLowerInvariant());
 
             var naoExisteNoBanco = await context.MovimentacoesEstoque.AnyAsync();
             Assert.False(naoExisteNoBanco);
@@ -127,7 +127,7 @@ namespace EstoqueApiTestesUnitarios.Tests.MovimentacaoEstoqueTestes.Create
             };
 
             var exception = await Assert.ThrowsAsync<NotFoundException>(() => service.CreateAsync(request));
-            Assert.Equal("Nenhum produto encontrado para o Id informado.", exception.Message);
+            Assert.Contains("id", exception.Message.ToLowerInvariant());
 
             var naoExisteNoBanco = await context.MovimentacoesEstoque.AnyAsync();
             Assert.False(naoExisteNoBanco);

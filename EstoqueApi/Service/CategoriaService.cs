@@ -49,7 +49,7 @@ namespace EstoqueApi.Service
             var categoria = await _context.Categorias.FirstOrDefaultAsync(c => c.Id == id);
 
             if (categoria is null)
-                throw new NotFoundException();
+                throw new NotFoundException("Nenhuma categoria foi encontrada para o Id informado.");
 
             _context.Categorias.Remove(categoria);
             await _context.SaveChangesAsync();
