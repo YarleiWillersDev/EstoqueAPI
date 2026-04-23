@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EstoqueApiTestesUnitarios.Tests.ProdutoTestes
 {
-    public class Create_Validation_Tests
+    public class Create_Validacao_Tests
     {
         private AppDbContext CriarBancoEmMemoria()
         {

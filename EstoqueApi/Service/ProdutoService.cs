@@ -61,10 +61,9 @@ namespace EstoqueApi.Service
         public async Task DeleteAsync(long id)
         {
             if (id <= 0)
-                throw new ValidationException("ID inválido");
+                throw new ValidationException("Id inválido");
 
-            var produto = await _context.Produtos
-                .FirstOrDefaultAsync(p => p.Id == id);
+            var produto = await _context.Produtos.FindAsync(id);
 
             if (produto is null)
                 throw new NotFoundException("Nenhum produto foi encontrado para o ID informado");
