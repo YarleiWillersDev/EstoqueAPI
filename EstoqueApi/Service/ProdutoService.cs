@@ -51,9 +51,6 @@ namespace EstoqueApi.Service
 
         private async Task ValidarCategoriaExisteAsync(long categoriaId)
         {
-            if (categoriaId <= 0)
-                throw new ValidationException("O ID não pode ser menor ou igual a 0.");
-
             var categoriaExiste = await _context.Categorias.
                 AnyAsync(c => c.Id == categoriaId);
 

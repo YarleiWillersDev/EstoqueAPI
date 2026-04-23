@@ -70,6 +70,9 @@ Tests/MovimentacaoEstoqueTestes/Create/
  Create_Bussines_Tests.cs
  Create_Sucesso_Tests.cs
  Create_Validacao_Tests.cs
+Tests/ProdutoTestes/
+ Create_Sucesso_Tests.cs
+ Create_Validation_Tests.cs
 
 [metadataReferences]
 ../EstoqueApi/obj/Debug/net8.0/ref/EstoqueApi.dll
