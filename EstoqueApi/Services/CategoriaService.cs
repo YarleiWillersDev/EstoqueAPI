@@ -7,17 +7,18 @@ using EstoqueApi.DTOs;
 using EstoqueApi.Exceptions;
 using EstoqueApi.Mappers;
 using EstoqueApi.Model;
+using EstoqueApi.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace EstoqueApi.Service
 {
     public class CategoriaService : ICategoriaService
     {
-        private readonly AppDbContext _context;
+        private readonly ICategoriaRepository _repository;
 
-        public CategoriaService(AppDbContext context)
+        public CategoriaService(ICategoriaRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         public async Task<CategoriaResponse> CreateAsync(CategoriaRequest request)
@@ -25,17 +26,16 @@ namespace EstoqueApi.Service
             if (request is null)
                 throw new ValidationException("A categoria não pode ser nula");
             
-            ValidarNomeNull(request.Nome);
+            ValidarNome(request.Nome);
             
             var categoriaEntity = CategoriaMapper.ToEntity(request);
 
-            _context.Categorias.Add(categoriaEntity);
-            await _context.SaveChangesAsync();
-
+            await _repository.AddAsync(categoriaEntity);
+            
             return CategoriaMapper.ToResponse(categoriaEntity);
         }
 
-        private void ValidarNomeNull (string nome)
+        private void ValidarNome (string nome)
         {
             if (string.IsNullOrWhiteSpace(nome))
                 throw new ValidationException("O nome da categoria não pode ser null.");
@@ -46,18 +46,17 @@ namespace EstoqueApi.Service
             if (id <= 0)
                 throw new ValidationException("Id inválido");
 
-            var categoria = await _context.Categorias.FirstOrDefaultAsync(c => c.Id == id);
+            var categoria = await _repository.GetByIdAsync(id);
 
             if (categoria is null)
                 throw new NotFoundException("Nenhuma categoria foi encontrada para o Id informado.");
 
-            _context.Categorias.Remove(categoria);
-            await _context.SaveChangesAsync();
+            await _repository.DeleteAsync(categoria);
         }
 
         public async Task<List<CategoriaSimplesResponse>> GetAllAsync()
         {
-            var categorias = await _context.Categorias.ToListAsync();
+            var categorias = await _repository.GetAllAsync();
 
             return categorias.Select(CategoriaMapper.ToSimplesResponse).ToList();
         }
@@ -67,9 +66,7 @@ namespace EstoqueApi.Service
             if (id <= 0)
                 throw new ValidationException("Id inválido");
 
-            var categoria = await _context.Categorias
-                .Include(c => c.Produtos)
-                .FirstOrDefaultAsync(c => c.Id == id);
+            var categoria = await _repository.GetByIdAsync(id);
 
             if (categoria is null)
                 throw new NotFoundException("Categoria não encontrada");
