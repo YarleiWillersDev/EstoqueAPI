@@ -2,13 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EstoqueApi.Context;
 using EstoqueApi.DTOs;
 using EstoqueApi.Exceptions;
 using EstoqueApi.Mappers;
 using EstoqueApi.Model;
 using EstoqueApi.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace EstoqueApi.Service
 {

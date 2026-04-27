@@ -19,6 +19,15 @@ namespace EstoqueApi.Mappers
             );
         }
 
+        public static Produto ToEntity(ProdutoAtualizarRequest request)
+        {
+            return new Produto(
+                request.Nome,
+                0,
+                request.CategoriaId
+            );
+        }
+
         public static ProdutoResponse ToResponse(Produto produto)
         {
             var movimentacoes = produto.Movimentacoes

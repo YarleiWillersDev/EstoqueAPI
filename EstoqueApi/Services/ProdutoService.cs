@@ -2,46 +2,45 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using EstoqueApi.Context;
 using EstoqueApi.DTOs;
 using EstoqueApi.Exceptions;
 using EstoqueApi.Mappers;
 using EstoqueApi.Model;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
+using EstoqueApi.Repositories;
 
 namespace EstoqueApi.Service
 {
     public class ProdutoService : IProdutoService
     {
-        private readonly AppDbContext _context;
+        private readonly IProdutoRepository _produtoRepository;
+        private readonly ICategoriaRepository _categoriaRepository;
 
-        public ProdutoService(AppDbContext context)
+        public ProdutoService(IProdutoRepository produtoRepository, ICategoriaRepository categoriaRepository)
         {
-            _context = context;
+            _produtoRepository = produtoRepository;
+            _categoriaRepository = categoriaRepository;
         }
 
         public async Task<ProdutoResponse> CreateAsync(ProdutoRequest request)
         {
             if (request is null)
-                throw new ValidationException("O produto não pode ser null");
+                throw new ValidationException("O produto não pode ser null"); 
+
+            ValidarProdutoCreate(request);
+            await ValidarCategoriaExisteAsync(request.CategoriaId);
 
             var produto = ProdutoMapper.ToEntity(request);
 
-            ValidarProduto(produto);
-            await ValidarCategoriaExisteAsync(produto.CategoriaId);
-
-            _context.Produtos.Add(produto);
-            await _context.SaveChangesAsync();
+            await _produtoRepository.AddAsync(produto);
 
             return ProdutoMapper.ToResponse(produto);
         }
 
-        private void ValidarProduto(Produto produto)
+        private void ValidarProdutoCreate(ProdutoRequest produto)
         {
             if (string.IsNullOrWhiteSpace(produto.Nome))
                 throw new ValidationException("O nome do produto não pode ser vazio.");
-            
+
             if (produto.Quantidade < 0)
                 throw new ValidationException("A quantidade do produto não pode ser menor que 0.");
 
@@ -51,10 +50,9 @@ namespace EstoqueApi.Service
 
         private async Task ValidarCategoriaExisteAsync(long categoriaId)
         {
-            var categoriaExiste = await _context.Categorias.
-                AnyAsync(c => c.Id == categoriaId);
+            var categoriaExiste = await _categoriaRepository.GetByIdAsync(categoriaId);
 
-            if (!categoriaExiste)
+            if (categoriaExiste is null)
                 throw new NotFoundException("Não existem categorias cadastradas para o ID informado.");
         }
 
@@ -63,27 +61,26 @@ namespace EstoqueApi.Service
             if (id <= 0)
                 throw new ValidationException("Id inválido");
 
-            var produto = await _context.Produtos.FindAsync(id);
+            var produto = await ValidarProdutoExistenteAsync(id);
 
-            if (produto is null)
-                throw new NotFoundException("Nenhum produto foi encontrado para o ID informado");
-
-            _context.Produtos.Remove(produto);
-            await _context.SaveChangesAsync();
+            await _produtoRepository.DeleteAsync(produto);
         }
 
         public async Task<List<ProdutoSimplesResponse>> GetAllAsync()
         {
-            var produtos = await _context.Produtos.ToListAsync();
+            var produtos = await _produtoRepository.GetAllAsync();
 
             return produtos.Select(ProdutoMapper.ToSimplesResponse).ToList();
         }
 
         public async Task<List<ProdutoSimplesResponse>> GetByCategoriaIdAsync(long categoriaId)
         {
-            var produtos = await _context.Produtos
-                .Where(p => p.CategoriaId == categoriaId)
-                .ToListAsync();
+            if (categoriaId <= 0)
+                throw new ValidationException("O Id da categoira não pode ser maior ou igual a 0.");
+            
+            await ValidarCategoriaExisteAsync(categoriaId);
+
+            var produtos = await _produtoRepository.GetByCategoriaIdAsync(categoriaId);
 
             return produtos.Select(ProdutoMapper.ToSimplesResponse).ToList();
         }
@@ -93,14 +90,52 @@ namespace EstoqueApi.Service
             if (id <= 0)
                 throw new ValidationException("O ID não pode ser menor ou igual a 0.");
 
-            var produto = await _context.Produtos
-                .Include(p => p.Movimentacoes)
-                .FirstOrDefaultAsync(p => p.Id == id);
+            var produto = await _produtoRepository.GetByIdAsync(id);
 
             if (produto is null)
                 throw new NotFoundException("Nenhum produto encontrado para o ID informado.");
 
             return ProdutoMapper.ToResponse(produto);
+        }
+
+        public async Task<ProdutoResponse> UpdateAsync(ProdutoAtualizarRequest produtoRequest, long idProdutoExistente)
+        {
+            if (produtoRequest is null)
+                throw new ValidationException("Dados inválidos para atualização do produto");
+
+            ValidarProdutoUpdate(produtoRequest);
+
+            var produtoExistente = await ValidarProdutoExistenteAsync(idProdutoExistente);
+
+            if (produtoExistente.CategoriaId != produtoRequest.CategoriaId)
+            {
+                await ValidarCategoriaExisteAsync(produtoRequest.CategoriaId);
+            }
+
+            produtoExistente.Atualizar(produtoRequest.Nome, produtoRequest.CategoriaId);
+
+            await _produtoRepository.UpdateAsync(produtoExistente);
+
+            return ProdutoMapper.ToResponse(produtoExistente);
+        }
+
+        private void ValidarProdutoUpdate(ProdutoAtualizarRequest produtoRequest)
+        {
+            if (string.IsNullOrWhiteSpace(produtoRequest.Nome))
+                throw new ValidationException("O nome do produto é obrigatório");
+            
+            if (produtoRequest.CategoriaId <= 0)
+                throw new ValidationException("O ID da categoria não pode ser menor ou igual a 0");
+        }
+
+        private async Task<Produto> ValidarProdutoExistenteAsync(long id)
+        {
+            var produtoExistente = await _produtoRepository.GetByIdAsync(id);
+
+            if (produtoExistente is null)
+                throw new NotFoundException("Nenhum produto foi encontrado para o Id informado.");
+
+            return produtoExistente;
         }
     }
 }

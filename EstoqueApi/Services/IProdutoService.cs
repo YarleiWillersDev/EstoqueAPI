@@ -14,5 +14,6 @@ namespace EstoqueApi.Service
         Task<List<ProdutoSimplesResponse>> GetAllAsync();
         Task<ProdutoResponse> CreateAsync(ProdutoRequest produto);
         Task DeleteAsync(long id);
+        Task<ProdutoResponse> UpdateAsync(ProdutoAtualizarRequest produto, long idProdutoExistente);
     }
 }

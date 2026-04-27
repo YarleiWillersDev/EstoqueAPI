@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EstoqueApi.DTOs;
 using EstoqueApi.Exceptions;
 
 namespace EstoqueApi.Model
@@ -26,6 +27,12 @@ namespace EstoqueApi.Model
         {
             Nome = nome;
             Quantidade = quantidade;
+            CategoriaId = categoriaId;
+        }
+
+        public void Atualizar(string nome, long categoriaId)
+        {
+            Nome = nome;
             CategoriaId = categoriaId;
         }
 
