@@ -24,7 +24,7 @@ namespace EstoqueApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProdutoResponse>> GetById(long id)
+        public async Task<ActionResult<ProdutoResponse>> GetById([FromRoute] long id)
         {
             if (id <= 0)
                 return BadRequest("O ID do produto não pode ser menor ou igual a 0.");
@@ -35,7 +35,7 @@ namespace EstoqueApi.Controllers
         }
 
         [HttpGet("by-categoria/{id}")]
-        public async Task<ActionResult<List<ProdutoResponse>>> GetByCategoriaId(long id)
+        public async Task<ActionResult<List<ProdutoResponse>>> GetByCategoriaId([FromRoute] long id)
         {
             if (id <= 0)
                 return BadRequest("O ID da categoria não pode ser menor ou igual a 0.");
@@ -57,11 +57,25 @@ namespace EstoqueApi.Controllers
         public async Task<ActionResult<ProdutoResponse>> Create([FromBody] ProdutoRequest request)
         {
             if (request is null)
-                return BadRequest("O produto não pode ser null");
+                return BadRequest("O produto não pode ser null.");
 
             var novoProduto = await _service.CreateAsync(request);
 
             return CreatedAtAction(nameof(GetById), new { id = novoProduto.Id }, novoProduto);
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<ActionResult<ProdutoResponse>> Update([FromRoute] long id, [FromBody] ProdutoAtualizarRequest request)
+        {
+            if (request is null)
+                return BadRequest("O produto não pode ser null.");
+            
+            if (id <= 0)
+                return BadRequest("O Id não pode ser menor ou igual a 0.");
+            
+            var produtoAtualizado = await _service.UpdateAsync(request, id);
+
+            return Ok(produtoAtualizado);
         }
 
         [HttpDelete("{id}")]

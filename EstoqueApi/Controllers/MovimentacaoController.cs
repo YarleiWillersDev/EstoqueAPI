@@ -25,7 +25,7 @@ namespace EstoqueApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<MovimentacaoEstoqueResponse>> GetById(long id)
+        public async Task<ActionResult<MovimentacaoEstoqueResponse>> GetById([FromRoute] long id)
         {
             if (id <= 0)
                 throw new ArgumentException("O Id da movimentação de estoque não pode ser menor ou igual a 0.");

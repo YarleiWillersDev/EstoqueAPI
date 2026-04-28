@@ -25,7 +25,7 @@ namespace EstoqueApi.Controllers
         }
         
         [HttpGet("{id}")]
-        public async Task<ActionResult<CategoriaResponse>> GetById(long id)
+        public async Task<ActionResult<CategoriaResponse>> GetById([FromRoute] long id)
         {
             var categoria = await _service.GetByIdAsync(id);
 
@@ -52,7 +52,7 @@ namespace EstoqueApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(long id)
+        public async Task<ActionResult> Delete([FromRoute] long id)
         {
             await _service.DeleteAsync(id);
 
