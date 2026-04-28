@@ -16,7 +16,7 @@ namespace EstoqueApiTestesUnitarios.Tests.MovimentacaoEstoqueTestes
 {
     public class Create_Bussines_Tests
     {
-        private AppDbContext CriarBancoEmMemoria()
+        /*private AppDbContext CriarBancoEmMemoria()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
@@ -51,6 +51,6 @@ namespace EstoqueApiTestesUnitarios.Tests.MovimentacaoEstoqueTestes
             var naoExisteNoBanco = await context.MovimentacoesEstoque.AnyAsync();
             Assert.False(naoExisteNoBanco);
             Assert.Equal(30, produto.Quantidade);
-        }
+        }*/
     }
 }

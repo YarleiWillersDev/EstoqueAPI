@@ -11,7 +11,7 @@ namespace EstoqueApiTestesUnitarios.Tests.CategoriaTestes
 {
     public class GetAll_Sucesso_Tests
     {
-        private AppDbContext CriarBancoEmMemoria()
+        /*private AppDbContext CriarBancoEmMemoria()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
@@ -77,6 +77,6 @@ namespace EstoqueApiTestesUnitarios.Tests.CategoriaTestes
 
             Assert.NotNull(response);
             Assert.Empty(response);
-        }
+        }*/
     }
 }

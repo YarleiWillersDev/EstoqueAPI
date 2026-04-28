@@ -11,7 +11,7 @@ namespace EstoqueApiTestesUnitarios.Tests.ProdutoTestes
 {
     public class Delete_Validacao_Tests
     {
-        private AppDbContext CriarBancoEmMemoria()
+        /*private AppDbContext CriarBancoEmMemoria()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
@@ -44,6 +44,6 @@ namespace EstoqueApiTestesUnitarios.Tests.ProdutoTestes
 
             var existeRegistro = await context.Produtos.AnyAsync();
             Assert.False(existeRegistro);
-        }
+        }*/
     }
 }

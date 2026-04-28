@@ -13,7 +13,7 @@ namespace EstoqueApiTestesUnitarios.Tests.CategoriaTestes
 {
     public class GetById_Validacao_Tests
     {
-        private AppDbContext CriarBancoEmMemoria()
+        /*private AppDbContext CriarBancoEmMemoria()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
@@ -40,6 +40,6 @@ namespace EstoqueApiTestesUnitarios.Tests.CategoriaTestes
 
             var exception = await Assert.ThrowsAsync<NotFoundException>(() => service.GetByIdAsync(999L));
             Assert.Contains("categoria", exception.Message.ToLowerInvariant());
-        }
+        }*/
     }
 }

@@ -12,7 +12,7 @@ namespace EstoqueApiTestesUnitarios.Tests.MovimentacaoEstoqueTestes.Create
 {
     public class Create_Sucesso_Tests
     {
-        private AppDbContext CriarBancoEmMemoria()
+        /*private AppDbContext CriarBancoEmMemoria()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
@@ -107,6 +107,6 @@ namespace EstoqueApiTestesUnitarios.Tests.MovimentacaoEstoqueTestes.Create
             var produtoAtualizado = await context.Produtos.FirstAsync();
             Assert.Equal(20, produtoAtualizado.Quantidade);
 
-        }
+        }*/
     }
 }

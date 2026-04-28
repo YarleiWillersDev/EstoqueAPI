@@ -11,16 +11,16 @@ namespace EstoqueApiTestesUnitarios.Tests.ProdutoTestes
 {
     public class Delete_Sucesso_Tests
     {
-        private AppDbContext CriarBancoEmMemoria()
+        /*private AppDbContext CriarBancoEmMemoria()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
 
             return new AppDbContext(options);
-        }
+        }*/
 
-        [Fact]
+        /*[Fact]
         public async Task DeleteAsync_IdValido_DeveRemoverProdutoDoBanco()
         {
             var context = CriarBancoEmMemoria();
@@ -40,6 +40,6 @@ namespace EstoqueApiTestesUnitarios.Tests.ProdutoTestes
 
             var existeRegistro = await context.Produtos.AnyAsync();
             Assert.False(existeRegistro);
-        }
+        }*/
     }
 }

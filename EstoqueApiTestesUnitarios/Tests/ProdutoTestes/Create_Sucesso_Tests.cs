@@ -5,52 +5,48 @@ using System.Threading.Tasks;
 using EstoqueApi.Context;
 using EstoqueApi.DTOs;
 using EstoqueApi.Model;
+using EstoqueApi.Repositories;
 using EstoqueApi.Service;
 using Microsoft.EntityFrameworkCore;
-
+using Moq;
 namespace EstoqueApiTestesUnitarios.Tests.ProdutoTestes
 {
     public class Create_Sucesso_Tests
     {
-        private AppDbContext CriarBancoEmMemoria()
-        {
-            var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .Options;
-
-            return new AppDbContext(options);
-        }
-
         [Fact]
         public async Task CreateAsync_EntradaValida_DeveRetornarSucesso()
         {
-            var context = CriarBancoEmMemoria();
-            var service = new ProdutoService(context);
-
             var categoria = new Categoria("Bebidas");
-            context.Categorias.Add(categoria);
-            await context.SaveChangesAsync();
+
+            var mockCategoriaRepository = new Mock<ICategoriaRepository>();
+            var mockProdutoRepository = new Mock<IProdutoRepository>();
 
             var produtoRequest = new ProdutoRequest
             {
                 Nome = "Coca-cola",
                 Quantidade = 0,
-                CategoriaId = categoria.Id
+                CategoriaId = 1
             };
+
+            mockCategoriaRepository
+                .Setup(c => c.GetByIdAsync(produtoRequest.CategoriaId))
+                .ReturnsAsync(categoria);
+
+            mockProdutoRepository
+                .Setup(p => p.AddAsync(It.IsAny<Produto>()))
+                .Returns(Task.CompletedTask);
+
+            var service = new ProdutoService(mockProdutoRepository.Object, mockCategoriaRepository.Object);
 
             var response = await service.CreateAsync(produtoRequest);
 
             Assert.NotNull(response);
-            Assert.Equal(response.Nome, produtoRequest.Nome);
-            Assert.Equal(response.Quantidade, produtoRequest.Quantidade);
-            Assert.Equal(response.CategoriaId, categoria.Id);
-            Assert.True(response.Id > 0);
+            Assert.Equal(produtoRequest.Nome, response.Nome);
+            Assert.Equal(produtoRequest.Quantidade, response.Quantidade);
+            Assert.Equal(produtoRequest.CategoriaId, response.CategoriaId);
 
-            var existeNoBanco = await context.Produtos.FirstOrDefaultAsync(p => p.Id == response.Id);
-            Assert.NotNull(existeNoBanco);
-            Assert.Equal(existeNoBanco.Nome, response.Nome);
-            Assert.Equal(existeNoBanco.Quantidade, response.Quantidade);
-            Assert.Equal(existeNoBanco.CategoriaId, categoria.Id);
+            mockCategoriaRepository.Verify(c => c.GetByIdAsync(produtoRequest.CategoriaId), Times.Once);
+            mockProdutoRepository.Verify(p => p.AddAsync(It.IsAny<Produto>()), Times.Once);
         }
     }
 }

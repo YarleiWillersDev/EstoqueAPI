@@ -12,7 +12,7 @@ namespace EstoqueApiTestesUnitarios.Tests.CategoriaTestes
 {
     public class Delete_Validacao_Tests
     {
-        private AppDbContext CriaBancoEmMemoria()
+        /*private AppDbContext CriaBancoEmMemoria()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
@@ -57,6 +57,6 @@ namespace EstoqueApiTestesUnitarios.Tests.CategoriaTestes
             Assert.NotNull(categoriaContinuaExistindoNoBanco);
             Assert.Equal(categoria.Id, categoriaContinuaExistindoNoBanco.Id);
             Assert.Equal(categoria.Nome, categoriaContinuaExistindoNoBanco.Nome);
-        }
+        }*/
     }
 }

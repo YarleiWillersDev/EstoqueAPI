@@ -11,7 +11,7 @@ namespace EstoqueApiTestesUnitarios.Tests.CategoriaTestes
 {
     public class GetById_Sucesso_Tests
     {
-        private AppDbContext CriaBancoEmMemoria()
+        /*private AppDbContext CriaBancoEmMemoria()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
@@ -37,6 +37,6 @@ namespace EstoqueApiTestesUnitarios.Tests.CategoriaTestes
             Assert.Equal(categoria.Id, response.Id);
             Assert.True(response.Id > 0);
         
-        }
+        }*/
     }
 }

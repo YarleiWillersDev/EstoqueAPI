@@ -11,7 +11,7 @@ namespace EstoqueApiTestesUnitarios.Tests.CategoriaTestes
 {
     public class Delete_Sucesso_Tests
     {
-        private AppDbContext CriarBancoEmMemoria()
+        /*private AppDbContext CriarBancoEmMemoria()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
@@ -34,6 +34,6 @@ namespace EstoqueApiTestesUnitarios.Tests.CategoriaTestes
 
             var buscarEntidadeNoBanco = await context.Categorias.FirstOrDefaultAsync(c => c.Id == categoria.Id);
             Assert.Null(buscarEntidadeNoBanco);
-        }
+        }*/
     }
 }

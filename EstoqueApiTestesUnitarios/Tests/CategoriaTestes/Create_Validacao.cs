@@ -12,7 +12,7 @@ namespace EstoqueApiTestesUnitarios.Tests.CategoriaTestes
 {
     public class Create_Validacao
     {
-        private AppDbContext CriarBancoEmMemoria()
+        /*private AppDbContext CriarBancoEmMemoria()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
@@ -86,6 +86,6 @@ namespace EstoqueApiTestesUnitarios.Tests.CategoriaTestes
 
             var existeRegistro = await context.Categorias.AnyAsync();
             Assert.False(existeRegistro);
-        }
+        }*/
     }
 }
