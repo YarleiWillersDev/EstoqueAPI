@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstoqueApi", "EstoqueApi\Es
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstoqueApiTestesUnitarios", "EstoqueApiTestesUnitarios\EstoqueApiTestesUnitarios.csproj", "{43B915E8-F60C-40D8-B584-A8FEB1909058}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EstoqueApiTestesIntegracao", "EstoqueApiTestesIntegracao\EstoqueApiTestesIntegracao.csproj", "{7E41FBA4-DC50-4CFF-9988-EE7DD62134E7}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionStringDb = builder.Configuration.GetConnectionString("Default");
+var connectionStringDb = builder.Configuration.GetConnectionString("DefaultConnection");
 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(connectionStringDb));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(connectionStringDb, ServerVersion.AutoDetect(connectionStringDb)));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
