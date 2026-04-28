@@ -7,6 +7,7 @@ using EstoqueApi.DTOs;
 using EstoqueApi.Exceptions;
 using EstoqueApi.Mappers;
 using EstoqueApi.Model;
+using EstoqueApi.Repositories;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,11 +16,13 @@ namespace EstoqueApi.Service
 {
     public class MovimentacaoEstoqueService : IMovimentacaoEstoqueService
     {
-        private readonly AppDbContext _context;
+        private readonly IMovimentacaoEstoqueRepository _movimentacaoRepository;
+        private readonly IProdutoRepository _produtoRepository;
 
-        public MovimentacaoEstoqueService(AppDbContext context)
+        public MovimentacaoEstoqueService(IMovimentacaoEstoqueRepository movimentacaoRepository, IProdutoRepository produtoRepository)
         {
-            _context = context;
+            _movimentacaoRepository = movimentacaoRepository;
+            _produtoRepository = produtoRepository;
         }
 
         public async Task<MovimentacaoEstoqueResponse> CreateAsync(MovimentacaoEstoqueRequest request)
@@ -35,8 +38,7 @@ namespace EstoqueApi.Service
 
             EfetuarOperacaoDeEstoque(movimentacaoEstoque, produto);
 
-            _context.MovimentacoesEstoque.Add(movimentacaoEstoque);
-            await _context.SaveChangesAsync();
+            await _movimentacaoRepository.AddAsync(movimentacaoEstoque);
 
             return MovimentacaoEstoqueMapper.ToResponse(movimentacaoEstoque);
         }
@@ -55,8 +57,7 @@ namespace EstoqueApi.Service
             if (produtoId <= 0)
                 throw new ValidationException("O Id do produto não pode ser menor ou igual a 0.");
 
-            var produto = await _context.Produtos
-                .FirstOrDefaultAsync(p => p.Id == produtoId);
+            var produto = await _produtoRepository.GetByIdAsync(produtoId);
             
             if (produto is null)
                 throw new NotFoundException("Nenhum produto encontrado para o Id informado.");
@@ -83,7 +84,7 @@ namespace EstoqueApi.Service
 
         public async Task<List<MovimentacaoEstoqueResponse>> GetAllAsync()
         {
-            var movimentacao = await _context.MovimentacoesEstoque.ToListAsync();
+            var movimentacao = await _movimentacaoRepository.GetAllAsync();
 
             return movimentacao.Select(MovimentacaoEstoqueMapper.ToResponse).ToList();
         }
@@ -93,8 +94,7 @@ namespace EstoqueApi.Service
             if (id <= 0)
                 throw new ValidationException("O Id informado não pode ser menor o igual a 0.");
             
-            var movimentacao = await _context.MovimentacoesEstoque
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var movimentacao = await _movimentacaoRepository.GetByIdAsync(id);
             
             if (movimentacao is null)
                 throw new NotFoundException("Nenhuma movimentação encontrada para o Id informada.");

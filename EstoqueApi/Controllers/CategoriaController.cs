@@ -48,7 +48,7 @@ namespace EstoqueApi.Controllers
 
             var categoriaResponse = await _service.CreateAsync(request);
 
-            return CreatedAtAction(nameof(GetById), new { id = categoriaResponse.Id }, categoriaResponse.Id);
+            return CreatedAtAction(nameof(GetById), new { id = categoriaResponse.Id }, categoriaResponse);
         }
 
         [HttpDelete("{id}")]
